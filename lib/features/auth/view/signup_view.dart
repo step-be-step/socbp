@@ -1,32 +1,25 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:socbp/common/rounded_small_button.dart';
+import 'package:socbp/common/common.dart';
 import 'package:socbp/constants/constants.dart';
-import 'package:socbp/features/auth/view/signup_view.dart';
+import 'package:socbp/features/auth/view/login_view.dart';
 import 'package:socbp/features/auth/widgets/auth_field.dart';
-import 'package:socbp/theme/pallete.dart';
+import 'package:socbp/theme/theme.dart';
 
-class LoginView extends StatefulWidget {
+class SignUpView extends StatefulWidget {
   static route() => MaterialPageRoute(
-        builder: (context) => const LoginView(),
+        builder: (context) => const SignUpView(),
       );
-  const LoginView({super.key});
+  const SignUpView({super.key});
 
   @override
-  State<LoginView> createState() => _LoginViewState();
+  State<SignUpView> createState() => _SignUpViewState();
 }
 
-class _LoginViewState extends State<LoginView> {
+class _SignUpViewState extends State<SignUpView> {
   final appbar = UICosntants.appBar();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
-
-  @override
-  void dispose() {
-    super.dispose();
-    emailController.dispose();
-    passwordController.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,13 +51,13 @@ class _LoginViewState extends State<LoginView> {
                 const SizedBox(height: 25),
                 RichText(
                   text: TextSpan(
-                    text: 'Нет аккауета?',
+                    text: 'Есть аккауета?',
                     style: const TextStyle(
                       fontSize: 16,
                     ),
                     children: [
                       TextSpan(
-                        text: ' Зарегестрируйся',
+                        text: ' Войди',
                         style: const TextStyle(
                           color: Pallete.blueColor,
                           fontSize: 16,
@@ -73,7 +66,7 @@ class _LoginViewState extends State<LoginView> {
                           ..onTap = () {
                             Navigator.push(
                               context,
-                              SignUpView.route(),
+                              LoginView.route(),
                             );
                           },
                       ),

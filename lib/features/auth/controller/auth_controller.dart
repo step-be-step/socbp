@@ -1,3 +1,5 @@
+import 'dart:html';
+
 import 'package:appwrite/models.dart' as model;
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -5,7 +7,7 @@ import 'package:socbp/apis/auth_api.dart';
 import 'package:socbp/apis/user_api.dart';
 import 'package:socbp/core/utils.dart';
 import 'package:socbp/features/auth/view/login_view.dart';
-import 'package:socbp/features/home/home_view.dart';
+import 'package:socbp/features/home/view/home_view.dart';
 import 'package:socbp/model/user_model.dart';
 
 final authControllerProvider =
@@ -14,6 +16,18 @@ final authControllerProvider =
     authAPI: ref.watch(authAPIProvider),
     userAPI: ref.watch(userAPIProvider),
   );
+});
+
+final currentUserDetailsProvider = FutureProvider((ref)  {
+  final currentUserId = ref.watch(currentUserAccountProvider).value!.$id;
+  print(currentUserId);
+  final userDetails = ref.watch(userDetailsProvider(currentUserId));
+  return userDetails.value;
+});
+
+final userDetailsProvider = FutureProvider.family((ref, String uid) {
+  final authController = ref.watch(authControllerProvider.notifier);
+  return authController.getUserData(uid);
 });
 
 final currentUserAccountProvider = FutureProvider((ref) {
@@ -83,5 +97,11 @@ class AuthController extends StateNotifier<bool> {
         Navigator.push(context, HomeView.route());
       },
     );
+  }
+
+  Future<UserModel> getUserData(String uid) async {
+    final document = await _userAPI.getUserData(uid);
+    final updateUser = UserModel.fromMap(document.data);
+    return updateUser;
   }
 }

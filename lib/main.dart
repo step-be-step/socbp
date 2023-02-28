@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:socbp/common/common.dart';
 import 'package:socbp/features/auth/controller/auth_controller.dart';
 import 'package:socbp/features/auth/view/signup_view.dart';
-import 'package:socbp/features/home/home_view.dart';
+import 'package:socbp/features/home/view/home_view.dart';
 import 'package:socbp/theme/theme.dart';
 
 void main() {

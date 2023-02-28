@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:socbp/theme/pallete.dart';
 
-class RounderSmallButton extends StatelessWidget {
+class RoundedSmallButton extends StatelessWidget {
   final VoidCallback onTap;
   final String label;
   final Color backgroundColor;
   final Color textColor;
 
-  const RounderSmallButton({
+  const RoundedSmallButton({
     super.key,
     required this.onTap,
     required this.label,

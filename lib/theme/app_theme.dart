@@ -8,6 +8,7 @@ class AppTheme {
       backgroundColor: Pallete.backgroundColor,
       elevation: 0,
     ),
+    // ! change color in home_view.dart
     floatingActionButtonTheme: const FloatingActionButtonThemeData(
       backgroundColor: Pallete.blueColor,
     ),

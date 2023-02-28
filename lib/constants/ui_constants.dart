@@ -14,4 +14,10 @@ class UICosntants {
       centerTitle: true,
     );
   }
+
+  static List<Widget> bottomTabBarPages = [
+    Text('Feed'),
+    Text('Search'),
+    Text('Notification'),
+  ];
 }

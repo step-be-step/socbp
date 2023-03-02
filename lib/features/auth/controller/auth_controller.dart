@@ -1,5 +1,3 @@
-import 'dart:html';
-
 import 'package:appwrite/models.dart' as model;
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -20,7 +18,6 @@ final authControllerProvider =
 
 final currentUserDetailsProvider = FutureProvider((ref)  {
   final currentUserId = ref.watch(currentUserAccountProvider).value!.$id;
-  print(currentUserId);
   final userDetails = ref.watch(userDetailsProvider(currentUserId));
   return userDetails.value;
 });
@@ -68,7 +65,7 @@ class AuthController extends StateNotifier<bool> {
             following: const [],
             profilePic: '',
             bannerPic: '',
-            uid: '',
+            uid: r.$id,
             bio: '',
             isOfficial: false);
         final res2 = await _userAPI.saveUserData(userModel);

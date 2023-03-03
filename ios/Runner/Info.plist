@@ -47,5 +47,12 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<!-- unlock permission IOS -->
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Разрешите доступ к галереи</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Разрешите доступ к камере</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Разрешите доступ к микрофону</string>
 </dict>
 </plist>

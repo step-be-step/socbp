@@ -8,6 +8,7 @@ import 'package:socbp/common/common.dart';
 import 'package:socbp/constants/constants.dart';
 import 'package:socbp/core/utils.dart';
 import 'package:socbp/features/auth/controller/auth_controller.dart';
+import 'package:socbp/features/post/controller/post_controller.dart';
 import 'package:socbp/theme/pallete.dart';
 
 class CreaetePostScreen extends ConsumerStatefulWidget {
@@ -29,6 +30,14 @@ class _CreaetePostScreenState extends ConsumerState<CreaetePostScreen> {
     postTextController.dispose();
   }
 
+  void sharePost() {
+    ref.read(postControllerProvider.notifier).sharePost(
+          images: images,
+          text: postTextController.text,
+          context: context,
+        );
+  }
+
   Future<void> onPickImages() async {
     images = await pickImages();
     setState(() {});
@@ -37,6 +46,7 @@ class _CreaetePostScreenState extends ConsumerState<CreaetePostScreen> {
   @override
   Widget build(BuildContext context) {
     final currentUser = ref.watch(currentUserDetailsProvider).value;
+    final isLoader = ref.watch(postControllerProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -48,14 +58,14 @@ class _CreaetePostScreenState extends ConsumerState<CreaetePostScreen> {
         ),
         actions: [
           RoundedSmallButton(
-            onTap: () {},
+            onTap: sharePost,
             label: 'Запостить',
             backgroundColor: Pallete.blueColor,
             textColor: Pallete.whiteColor,
           ),
         ],
       ),
-      body: currentUser == null
+      body: isLoader || currentUser == null
           ? const Loader()
           : SafeArea(
               child: SingleChildScrollView(
@@ -63,9 +73,13 @@ class _CreaetePostScreenState extends ConsumerState<CreaetePostScreen> {
                   children: [
                     Row(
                       children: [
-                        CircleAvatar(
-                          backgroundImage: NetworkImage(currentUser.profilePic),
-                          radius: 30,
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: CircleAvatar(
+                            backgroundImage:
+                                NetworkImage(currentUser.profilePic),
+                            radius: 30,
+                          ),
                         ),
                         const SizedBox(width: 15),
                         Expanded(

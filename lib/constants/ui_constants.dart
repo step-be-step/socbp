@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:socbp/constants/constants.dart';
+import 'package:socbp/features/post/widgets/post_list.dart';
 import 'package:socbp/theme/pallete.dart';
 
 class UICosntants {
@@ -15,8 +16,8 @@ class UICosntants {
     );
   }
 
-  static List<Widget> bottomTabBarPages = [
-    Text('Feed'),
+  static const List<Widget> bottomTabBarPages = [
+    PostList(),
     Text('Search'),
     Text('Notification'),
   ];

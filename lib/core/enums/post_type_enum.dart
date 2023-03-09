@@ -12,7 +12,7 @@ extension ConvertPost on String {
       case 'text':
         return PostType.text;
       case 'image':
-        return PostType.text;
+        return PostType.image;
       default:
         return PostType.text;
     }

@@ -16,6 +16,7 @@ final postAPIProvider = Provider((ref) {
 
 abstract class IPostApi {
   FutureEither<Document> sharePost(Post post);
+  Future<List<Document>> getPosts();
 }
 
 class PostAPI implements IPostApi {
@@ -37,5 +38,14 @@ class PostAPI implements IPostApi {
     } catch (e, st) {
       return left(Failure(e.toString(), st));
     }
+  }
+
+  @override
+  Future<List<Document>> getPosts() async {
+    final documents = await _db.listDocuments(
+      databaseId: AppwriteConstants.databaseId,
+      collectionId: AppwriteConstants.postCollection,
+    );
+    return documents.documents;
   }
 }

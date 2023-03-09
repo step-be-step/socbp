@@ -18,6 +18,11 @@ final postControllerProvider =
   );
 });
 
+final getPostsProvider = FutureProvider((ref) {
+  final postController = ref.watch(postControllerProvider.notifier);
+  return postController.getPosts();
+});
+
 class PostController extends StateNotifier<bool> {
   final PostAPI _postAPI;
   final StorageAPI _storageAPI;
@@ -30,6 +35,11 @@ class PostController extends StateNotifier<bool> {
         _postAPI = postAPI,
         _storageAPI = storageAPI,
         super(false);
+
+  Future<List<Post>> getPosts() async {
+    final postList = await _postAPI.getPosts();
+    return postList.map((post) => Post.fromMap(post.data)).toList();
+  }
 
   void sharePost({
     required List<File> images,

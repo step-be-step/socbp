@@ -1,6 +1,8 @@
 import 'package:any_link_preview/any_link_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:like_button/like_button.dart';
 import 'package:socbp/common/common.dart';
 import 'package:socbp/constants/constants.dart';
 import 'package:socbp/core/enums/post_type_enum.dart';
@@ -94,11 +96,39 @@ class PostCard extends ConsumerWidget {
                                   text: post.reshareCount.toString(),
                                   onTap: () {},
                                 ),
-                                PostIconButton(
-                                  pathName: AssetsConstants.likeOutlinedIcon,
-                                  text: post.likes.length.toString(),
-                                  onTap: () {},
+                                LikeButton(
+                                  size: 25,
+                                  likeBuilder: (isLiked) {
+                                    return isLiked
+                                        ? SvgPicture.asset(
+                                            AssetsConstants.likeFilledIcon,
+                                            color: Pallete.redColor,
+                                          )
+                                        : SvgPicture.asset(
+                                            AssetsConstants.likeOutlinedIcon,
+                                            color: Pallete.greyColor,
+                                          );
+                                  },
+                                  likeCount: post.likes.length,
+                                  countBuilder: (likeCount, isLiked, text) {
+                                    return Padding(
+                                      padding: const EdgeInsets.only(left: 2.0),
+                                      child: Text(
+                                        text,
+                                        style: TextStyle(
+                                            color: isLiked
+                                                ? Pallete.redColor
+                                                : Pallete.whiteColor,
+                                            fontSize: 16),
+                                      ),
+                                    );
+                                  },
                                 ),
+                                // PostIconButton(
+                                //   pathName: AssetsConstants.likeOutlinedIcon,
+                                //   text: post.likes.length.toString(),
+                                //   onTap: () {},
+                                // ),
                                 IconButton(
                                   onPressed: () {},
                                   icon: const Icon(

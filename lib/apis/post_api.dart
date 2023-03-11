@@ -9,19 +9,22 @@ import 'package:socbp/model/post_model.dart';
 
 final postAPIProvider = Provider((ref) {
   return PostAPI(
-      db: ref.watch(
-    appwriteDatabaseProvider,
-  ));
+      db: ref.watch(appwriteDatabaseProvider),
+      realtime: ref.watch(appwriteRealtimeProvider));
 });
 
 abstract class IPostApi {
   FutureEither<Document> sharePost(Post post);
   Future<List<Document>> getPosts();
+  Stream<RealtimeMessage> getLatesPost();
 }
 
 class PostAPI implements IPostApi {
   final Databases _db;
-  PostAPI({required db}) : _db = db;
+  final Realtime _realtime;
+  PostAPI({required db, required realtime})
+      : _db = db,
+        _realtime = realtime;
 
   @override
   FutureEither<Document> sharePost(Post post) async {
@@ -45,7 +48,15 @@ class PostAPI implements IPostApi {
     final documents = await _db.listDocuments(
       databaseId: AppwriteConstants.databaseId,
       collectionId: AppwriteConstants.postCollection,
+      queries: [Query.orderDesc('postAt')]
     );
     return documents.documents;
+  }
+
+  @override
+  Stream<RealtimeMessage> getLatesPost() {
+    return _realtime.subscribe([
+      'databases.${AppwriteConstants.databaseId}.collections.${AppwriteConstants.postCollection}.documents'
+    ]).stream;
   }
 }

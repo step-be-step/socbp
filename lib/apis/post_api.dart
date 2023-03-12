@@ -17,6 +17,7 @@ abstract class IPostApi {
   FutureEither<Document> sharePost(Post post);
   Future<List<Document>> getPosts();
   Stream<RealtimeMessage> getLatesPost();
+  FutureEither<Document> likePost(Post post);
 }
 
 class PostAPI implements IPostApi {
@@ -46,10 +47,9 @@ class PostAPI implements IPostApi {
   @override
   Future<List<Document>> getPosts() async {
     final documents = await _db.listDocuments(
-      databaseId: AppwriteConstants.databaseId,
-      collectionId: AppwriteConstants.postCollection,
-      queries: [Query.orderDesc('postAt')]
-    );
+        databaseId: AppwriteConstants.databaseId,
+        collectionId: AppwriteConstants.postCollection,
+        queries: [Query.orderDesc('postAt')]);
     return documents.documents;
   }
 
@@ -58,5 +58,24 @@ class PostAPI implements IPostApi {
     return _realtime.subscribe([
       'databases.${AppwriteConstants.databaseId}.collections.${AppwriteConstants.postCollection}.documents'
     ]).stream;
+  }
+
+  @override
+  FutureEither<Document> likePost(Post post) async {
+    try {
+      final document = await _db.updateDocument(
+        databaseId: AppwriteConstants.databaseId,
+        collectionId: AppwriteConstants.postCollection,
+        documentId: post.id,
+        data: {
+          'likes': post.likes
+        },
+      );
+      return right(document);
+    } on AppwriteException catch (e, st) {
+      return left(Failure(e.message ?? "Произошла неожидання ошибка", st));
+    } catch (e, st) {
+      return left(Failure(e.toString(), st));
+    }
   }
 }

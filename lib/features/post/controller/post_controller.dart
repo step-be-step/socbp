@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:appwrite/appwrite.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:socbp/apis/post_api.dart';
@@ -47,7 +48,7 @@ class PostController extends StateNotifier<bool> {
     return postList.map((post) => Post.fromMap(post.data)).toList();
   }
 
- void likePost(Post post, UserModel user) async {
+  void likePost(Post post, UserModel user) async {
     List<String> likes = post.likes;
 
     if (post.likes.contains(user.uid)) {
@@ -59,6 +60,34 @@ class PostController extends StateNotifier<bool> {
     post = post.copyWith(likes: likes);
     final res = await _postAPI.likePost(post);
     res.fold((l) => null, (r) => null);
+  }
+
+  void resharePost(
+    Post post,
+    UserModel currentUser,
+    BuildContext context,
+  ) async {
+    post = post.copyWith(
+      repostedBy: currentUser.name,
+      likes: [],
+      commentId: [],
+      reshareCount: post.reshareCount + 1,
+    );
+
+    final res = await _postAPI.updateResharePost(post);
+    res.fold(
+      (l) => showSnackBar(context, l.message),
+      (r) async {
+        post = post.copyWith(
+          id: ID.unique(),
+          reshareCount: 0,
+          postAt: DateTime.now(),
+        );
+        final res2 = await _postAPI.sharePost(post);
+        res2.fold((l) => showSnackBar(context, l.message),
+            (r) => showSnackBar(context, 'Репост!'));
+      },
+    );
   }
 
   void sharePost({
@@ -89,17 +118,19 @@ class PostController extends StateNotifier<bool> {
     final user = _ref.read(currentUserDetailsProvider).value!;
 
     Post post = Post(
-        text: text,
-        hashtags: hashtags,
-        link: link,
-        imageLinks: imageLinks,
-        uid: user.uid,
-        postType: PostType.image,
-        postAt: DateTime.now(),
-        likes: const [],
-        commentId: const [],
-        id: '',
-        reshareCount: 0);
+      text: text,
+      hashtags: hashtags,
+      link: link,
+      imageLinks: imageLinks,
+      uid: user.uid,
+      postType: PostType.image,
+      postAt: DateTime.now(),
+      likes: const [],
+      commentId: const [],
+      id: '',
+      reshareCount: 0,
+      repostedBy: '',
+    );
     final res = await _postAPI.sharePost(post);
     state = false;
     res.fold((l) => showSnackBar(context, l.message), (r) => null);
@@ -115,17 +146,19 @@ class PostController extends StateNotifier<bool> {
     final user = _ref.read(currentUserDetailsProvider).value!;
 
     Post post = Post(
-        text: text,
-        hashtags: hashtags,
-        link: link,
-        imageLinks: const [],
-        uid: user.uid,
-        postType: PostType.text,
-        postAt: DateTime.now(),
-        likes: const [],
-        commentId: const [],
-        id: '',
-        reshareCount: 0);
+      text: text,
+      hashtags: hashtags,
+      link: link,
+      imageLinks: const [],
+      uid: user.uid,
+      postType: PostType.text,
+      postAt: DateTime.now(),
+      likes: const [],
+      commentId: const [],
+      id: '',
+      reshareCount: 0,
+      repostedBy: '',
+    );
     final res = await _postAPI.sharePost(post);
     state = false;
     res.fold((l) => showSnackBar(context, l.message), (r) => null);

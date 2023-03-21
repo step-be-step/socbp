@@ -43,6 +43,25 @@ class PostCard extends ConsumerWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+                              if (post.repostedBy.isNotEmpty)
+                                Row(
+                                  children: [
+                                    SvgPicture.asset(
+                                      AssetsConstants.repostIcon,
+                                      color: Pallete.greyColor,
+                                      height: 20,
+                                    ),
+                                    const SizedBox(width: 2),
+                                    Text(
+                                      '${post.repostedBy} зарепостил',
+                                      style: const TextStyle(
+                                        color: Pallete.greyColor,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               Row(
                                 children: [
                                   Container(
@@ -99,9 +118,15 @@ class PostCard extends ConsumerWidget {
                                       onTap: () {},
                                     ),
                                     PostIconButton(
-                                      pathName: AssetsConstants.retweetIcon,
+                                      pathName: AssetsConstants.repostIcon,
                                       text: post.reshareCount.toString(),
-                                      onTap: () {},
+                                      onTap: () {
+                                        ref
+                                            .read(
+                                                postControllerProvider.notifier)
+                                            .resharePost(
+                                                post, currentUser, context);
+                                      },
                                     ),
                                     LikeButton(
                                       size: 25,

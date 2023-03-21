@@ -18,6 +18,7 @@ abstract class IPostApi {
   Future<List<Document>> getPosts();
   Stream<RealtimeMessage> getLatesPost();
   FutureEither<Document> likePost(Post post);
+  FutureEither<Document> updateResharePost(Post post);
 }
 
 class PostAPI implements IPostApi {
@@ -38,7 +39,7 @@ class PostAPI implements IPostApi {
       );
       return right(document);
     } on AppwriteException catch (e, st) {
-      return left(Failure(e.message ?? "Произошла неожидання ошибка", st));
+      return left(Failure(e.message ?? 'Произошла неожидання ошибка', st));
     } catch (e, st) {
       return left(Failure(e.toString(), st));
     }
@@ -67,13 +68,30 @@ class PostAPI implements IPostApi {
         databaseId: AppwriteConstants.databaseId,
         collectionId: AppwriteConstants.postCollection,
         documentId: post.id,
+        data: {'likes': post.likes},
+      );
+      return right(document);
+    } on AppwriteException catch (e, st) {
+      return left(Failure(e.message ?? 'Произошла неожидання ошибка', st));
+    } catch (e, st) {
+      return left(Failure(e.toString(), st));
+    }
+  }
+
+  @override
+  FutureEither<Document> updateResharePost(Post post) async {
+    try {
+      final document = await _db.updateDocument(
+        databaseId: AppwriteConstants.databaseId,
+        collectionId: AppwriteConstants.postCollection,
+        documentId: post.id,
         data: {
-          'likes': post.likes
+          'reshareCount': post.reshareCount,
         },
       );
       return right(document);
     } on AppwriteException catch (e, st) {
-      return left(Failure(e.message ?? "Произошла неожидання ошибка", st));
+      return left(Failure(e.message ?? 'Произошла неожидання ошибка', st));
     } catch (e, st) {
       return left(Failure(e.toString(), st));
     }

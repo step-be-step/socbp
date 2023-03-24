@@ -35,8 +35,9 @@ class _CreaetePostScreenState extends ConsumerState<CreaetePostScreen> {
           images: images,
           text: postTextController.text,
           context: context,
+          repliedTo: '',
         );
-        Navigator.pop(context);
+    Navigator.pop(context);
   }
 
   Future<void> onPickImages() async {

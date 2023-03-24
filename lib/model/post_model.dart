@@ -16,6 +16,8 @@ class Post {
   final String id;
   final int reshareCount;
   final String repostedBy;
+  final String repliedTo;
+
   const Post({
     required this.text,
     required this.hashtags,
@@ -29,6 +31,7 @@ class Post {
     required this.id,
     required this.reshareCount,
     required this.repostedBy,
+    required this.repliedTo,
   });
 
   Post copyWith({
@@ -44,6 +47,7 @@ class Post {
     String? id,
     int? reshareCount,
     String? repostedBy,
+    String? repliedTo,
   }) {
     return Post(
       text: text ?? this.text,
@@ -58,6 +62,7 @@ class Post {
       id: id ?? this.id,
       reshareCount: reshareCount ?? this.reshareCount,
       repostedBy: repostedBy ?? this.repostedBy,
+      repliedTo: repliedTo ?? this.repliedTo,
     );
   }
 
@@ -75,6 +80,7 @@ class Post {
     result.addAll({'commentId': commentId});
     result.addAll({'reshareCount': reshareCount});
     result.addAll({'repostedBy': repostedBy});
+    result.addAll({'repliedTo': repliedTo});
 
     return result;
   }
@@ -92,13 +98,14 @@ class Post {
       commentId: List<String>.from(map['commentId']),
       id: map['\$id'] ?? '',
       reshareCount: map['reshareCount']?.toInt() ?? 0,
-      repostedBy: map['repostedBy'],
+      repostedBy: map['repostedBy'] ?? '',
+      repliedTo: map['repliedTo'] ?? '',
     );
   }
 
   @override
   String toString() {
-    return 'Post(text: $text, hashtags: $hashtags, link: $link, imageLinks: $imageLinks, uid: $uid, postType: $postType, postAt: $postAt, likes: $likes, commentId: $commentId, id: $id, reshareCount: $reshareCount, repostedBy: $repostedBy)';
+    return 'Post(text: $text, hashtags: $hashtags, link: $link, imageLinks: $imageLinks, uid: $uid, postType: $postType, postAt: $postAt, likes: $likes, commentId: $commentId, id: $id, reshareCount: $reshareCount, repostedBy: $repostedBy, repliedTo: $repliedTo)';
   }
 
   @override
@@ -117,7 +124,8 @@ class Post {
         listEquals(other.commentId, commentId) &&
         other.id == id &&
         other.reshareCount == reshareCount &&
-        other.repostedBy == repostedBy;
+        other.repostedBy == repostedBy &&
+        other.repliedTo == repliedTo;
   }
 
   @override
@@ -132,6 +140,8 @@ class Post {
         likes.hashCode ^
         commentId.hashCode ^
         id.hashCode ^
-        reshareCount.hashCode & repostedBy.hashCode;
+        reshareCount.hashCode ^
+        repostedBy.hashCode ^
+        repliedTo.hashCode;
   }
 }

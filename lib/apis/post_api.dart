@@ -19,6 +19,8 @@ abstract class IPostApi {
   Stream<RealtimeMessage> getLatesPost();
   FutureEither<Document> likePost(Post post);
   FutureEither<Document> updateResharePost(Post post);
+  Future<List<Document>> getRepliseToPost(Post post);
+  Future<Document> getPostById(String id);
 }
 
 class PostAPI implements IPostApi {
@@ -95,5 +97,26 @@ class PostAPI implements IPostApi {
     } catch (e, st) {
       return left(Failure(e.toString(), st));
     }
+  }
+
+  @override
+  Future<List<Document>> getRepliseToPost(Post post) async {
+    final document = await _db.listDocuments(
+      databaseId: AppwriteConstants.databaseId,
+      collectionId: AppwriteConstants.postCollection,
+      queries: [
+        Query.equal('repliedTo', post.id),
+      ],
+    );
+    return document.documents;
+  }
+
+  @override
+  Future<Document> getPostById(String id) async {
+    return _db.getDocument(
+      databaseId: AppwriteConstants.databaseId,
+      collectionId: AppwriteConstants.postCollection,
+      documentId: id,
+    );
   }
 }

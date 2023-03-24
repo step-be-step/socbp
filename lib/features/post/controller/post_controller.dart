@@ -25,9 +25,19 @@ final getPostsProvider = FutureProvider((ref) {
   return postController.getPosts();
 });
 
+final getRepliesToPostsProvider = FutureProvider.family((ref, Post post) {
+  final postController = ref.watch(postControllerProvider.notifier);
+  return postController.getRepliseToPost(post);
+});
+
 final getLatesPostProvider = StreamProvider((ref) {
   final postAPI = ref.watch(postAPIProvider);
   return postAPI.getLatesPost();
+});
+
+final getPostByIdProvider = FutureProvider.family((ref, String id) async {
+  final postController = ref.watch(postControllerProvider.notifier);
+  return postController.getPostById(id);
 });
 
 class PostController extends StateNotifier<bool> {
@@ -46,6 +56,11 @@ class PostController extends StateNotifier<bool> {
   Future<List<Post>> getPosts() async {
     final postList = await _postAPI.getPosts();
     return postList.map((post) => Post.fromMap(post.data)).toList();
+  }
+
+  Future<Post> getPostById(String id) async {
+    final post = await _postAPI.getPostById(id);
+    return Post.fromMap(post.data);
   }
 
   void likePost(Post post, UserModel user) async {
@@ -94,22 +109,38 @@ class PostController extends StateNotifier<bool> {
     required List<File> images,
     required String text,
     required BuildContext context,
+    required String repliedTo,
   }) {
     if (text.isEmpty) {
       showSnackBar(context, 'Пожалуста введите текс');
       return;
     }
     if (images.isNotEmpty) {
-      _shareImagePost(images: images, text: text, context: context);
+      _shareImagePost(
+        images: images,
+        text: text,
+        context: context,
+        repliedTo: repliedTo,
+      );
     } else {
-      _shareTextPost(text: text, context: context);
+      _shareTextPost(
+        text: text,
+        context: context,
+        repliedTo: repliedTo,
+      );
     }
+  }
+
+  Future<List<Post>> getRepliseToPost(Post post) async {
+    final document = await _postAPI.getRepliseToPost(post);
+    return document.map((post) => Post.fromMap(post.data)).toList();
   }
 
   void _shareImagePost({
     required List<File> images,
     required String text,
     required BuildContext context,
+    required String repliedTo,
   }) async {
     state = true;
     final hashtags = _getHashtagsFromText(text);
@@ -130,6 +161,7 @@ class PostController extends StateNotifier<bool> {
       id: '',
       reshareCount: 0,
       repostedBy: '',
+      repliedTo: repliedTo,
     );
     final res = await _postAPI.sharePost(post);
     state = false;
@@ -139,6 +171,7 @@ class PostController extends StateNotifier<bool> {
   void _shareTextPost({
     required String text,
     required BuildContext context,
+    required String repliedTo,
   }) async {
     state = true;
     final hashtags = _getHashtagsFromText(text);
@@ -158,6 +191,7 @@ class PostController extends StateNotifier<bool> {
       id: '',
       reshareCount: 0,
       repostedBy: '',
+      repliedTo: repliedTo,
     );
     final res = await _postAPI.sharePost(post);
     state = false;

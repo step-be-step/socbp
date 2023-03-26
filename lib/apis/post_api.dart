@@ -21,6 +21,7 @@ abstract class IPostApi {
   FutureEither<Document> updateResharePost(Post post);
   Future<List<Document>> getRepliseToPost(Post post);
   Future<Document> getPostById(String id);
+  Future<List<Document>> getUserPost(String uid);
 }
 
 class PostAPI implements IPostApi {
@@ -118,5 +119,17 @@ class PostAPI implements IPostApi {
       collectionId: AppwriteConstants.postCollection,
       documentId: id,
     );
+  }
+
+  @override
+  Future<List<Document>> getUserPost(String uid) async {
+    final document = await _db.listDocuments(
+      databaseId: AppwriteConstants.databaseId,
+      collectionId: AppwriteConstants.postCollection,
+      queries: [
+        Query.equal('uid', uid),
+      ],
+    );
+    return document.documents;
   }
 }

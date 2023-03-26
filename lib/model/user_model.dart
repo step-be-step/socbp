@@ -23,8 +23,6 @@ class UserModel {
     required this.isOfficial,
   });
 
-
-
   UserModel copyWith({
     String? email,
     String? name,

@@ -6,7 +6,8 @@ import 'package:socbp/features/auth/controller/auth_controller.dart';
 import 'package:socbp/features/post/controller/post_controller.dart';
 import 'package:socbp/features/post/widgets/post_card.dart';
 import 'package:socbp/features/user_profile/controller/user_profile_controller.dart';
-import 'package:socbp/features/user_profile/view/follow_count.dart';
+import 'package:socbp/features/user_profile/view/edit_profile_view.dart';
+import 'package:socbp/features/user_profile/widgets/follow_count.dart';
 import 'package:socbp/model/post_model.dart';
 import 'package:socbp/model/user_model.dart';
 import 'package:socbp/theme/pallete.dart';
@@ -35,7 +36,7 @@ class UserProfile extends ConsumerWidget {
                             ? Container(
                                 color: Pallete.blueColor,
                               )
-                            : Image.network(user.bannerPic),
+                            : Image.network(user.bannerPic, fit: BoxFit.fitWidth,),
                       ),
                       Positioned(
                         bottom: 0,
@@ -48,6 +49,11 @@ class UserProfile extends ConsumerWidget {
                         alignment: Alignment.bottomRight,
                         margin: const EdgeInsets.all(20),
                         child: OutlinedButton(
+                          onPressed: () {
+                            if (currentUser.uid == user.uid) {
+                              Navigator.push(context, EditProfileView.route());
+                            }
+                          },
                           style: ElevatedButton.styleFrom(
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(20),
@@ -55,7 +61,6 @@ class UserProfile extends ConsumerWidget {
                                     color: Pallete.whiteColor)),
                             padding: const EdgeInsets.symmetric(horizontal: 25),
                           ),
-                          onPressed: () {},
                           child: Text(
                             currentUser.uid == user.uid
                                 ? 'Изм Проф'
@@ -92,7 +97,7 @@ class UserProfile extends ConsumerWidget {
                           user.bio,
                           style: const TextStyle(
                             fontSize: 17,
-                            color: Pallete.greyColor,
+                            color: Pallete.whiteColor,
                           ),
                         ),
                         const SizedBox(height: 10),
